@@ -1,10 +1,24 @@
 version: '3.9'
 
 services:
-  mtr:
+  mtr01:
     build: .
     environment:
-      - TARGET_HOST=8.8.8.8  # 監視対象のホストを指定（デフォルトはGoogle DNS）
+      - TARGET_HOST=192.168.1.1  # 監視対象のホストを指定
+    volumes:
+      - ./logs:/logs  # ログファイルを保存するディレクトリをマウント
+    restart: always
+  mtr02:
+    build: .
+    environment:
+      - TARGET_HOST=192.168.1.9  # 監視対象のホストを指定
+    volumes:
+      - ./logs:/logs  # ログファイルを保存するディレクトリをマウント
+    restart: always
+  mtr03:
+    build: .
+    environment:
+      - TARGET_HOST=192.168.1.22 # 監視対象のホストを指定
     volumes:
       - ./logs:/logs  # ログファイルを保存するディレクトリをマウント
     restart: always

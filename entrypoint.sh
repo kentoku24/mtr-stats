@@ -1,17 +1,10 @@
 #!/bin/sh
 
-# デフォルトのターゲットホスト
-TARGET_HOST=${TARGET_HOST:-"8.8.8.8"}
-
 # タイムゾーンをAsia/Tokyoに設定
-export TZ=Asia/Tokyo
+export TZ='Asia/Tokyo'
 
-# 現在の日付を取得
-CURRENT_DATE=$(date '+%Y_%m_%d')
-# ローカルホストIPを取得
+TARGET_HOST=${TARGET_HOST:-"8.8.8.8"}
 HOST_IP=$(hostname -i)
-# 出力ファイル名を設定
-OUTPUT_FILE="/logs/${CURRENT_DATE}__${HOST_IP}_${TARGET_HOST}.log"
 
 echo "mtr script started for $TARGET_HOST"
 
@@ -24,12 +17,15 @@ while true; do
     
     # 現在時刻をISO8601形式でタイムゾーン付きで取得
     CURRENT_TIME=$(date '+%Y-%m-%dT%H:%M:%S%z')
-    # タイムスタンプとローカルホストIPを追加
-    echo "=== MTR Report from $HOST_IP at $CURRENT_TIME ===" >> $OUTPUT_FILE
+    # 現在の日付を取得
+    CURRENT_DATE=$(date '+%Y_%m_%d')
+    OUTPUT_FILE="/logs/${CURRENT_DATE}__to_${TARGET_HOST}_from_${HOST_IP}.log"
+
+    # Store the description in a variable
+    DESCRIPTION="=== MTR Report from $HOST_IP at $CURRENT_TIME ==="
     
-    # mtrコマンドを実行し、jqでtimeキーを追加
-    mtr -r -c 10 --json $TARGET_HOST | jq --arg time "$CURRENT_TIME" '.report.time = $time' >> $OUTPUT_FILE
-    echo "" >> $OUTPUT_FILE
+    # Modified jq command to add both time and description with compact output
+    mtr -r -b -c 50 --json $TARGET_HOST | jq -c --arg time "$CURRENT_TIME" --arg desc "$DESCRIPTION" '.report.time = $time | .report.description = $desc' >> $OUTPUT_FILE
     
     # 少し待機して次のループに入る（59秒後）
     # 現在の秒を取得
