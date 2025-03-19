@@ -55,3 +55,9 @@ MTRの測定結果は`logs/mtr_stats.txt`に保存されます。各測定には
 ## ライセンス
 
 このプロジェクトはMITライセンスの下で公開されています。
+
+
+## 2025/03/19時点の使い方
+
+./yyyymmdd_raw/ ディレクトリ以下に全ログファイルをいれる
+cat ./yyyymmdd_raw/* | sh extract_mtr_stats.sh | python reduce.py > yyyymmdd_all.log
