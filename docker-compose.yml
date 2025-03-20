@@ -8,6 +8,14 @@ services:
     volumes:
       - ./logs:/logs  # ログファイルを保存するディレクトリをマウント
     restart: always
+    labels:
+      com.datadoghq.ad.logs: '[{"source": "mtr", "service": "mtr01"}]'
+    logging:
+      driver: "json-file"
+      options:
+        labels: "service"
+        tag: "mtr01"
+
   mtr02:
     build: .
     environment:
@@ -15,6 +23,13 @@ services:
     volumes:
       - ./logs:/logs  # ログファイルを保存するディレクトリをマウント
     restart: always
+    labels:
+      com.datadoghq.ad.logs: '[{"source": "mtr", "service": "mtr02"}]'
+    logging:
+      driver: "json-file"
+      options:
+        labels: "service"
+        tag: "mtr02"
   mtr03:
     build: .
     environment:
@@ -22,3 +37,42 @@ services:
     volumes:
       - ./logs:/logs  # ログファイルを保存するディレクトリをマウント
     restart: always
+    labels:
+      com.datadoghq.ad.logs: '[{"source": "mtr", "service": "mtr03"}]'
+    logging:
+      driver: "json-file"
+      options:
+        labels: "service"
+        tag: "mtr03"
+
+
+  datadog-agent:
+    image: gcr.io/datadoghq/agent:latest
+    pid: host
+    environment:
+      - DD_API_KEY=${DD_API_KEY}
+      - DD_SITE=${DD_SITE:-datadoghq.com}
+      - DD_HOSTNAME=mtr-monitor
+      - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true 
+      - DD_LOGS_ENABLED=true
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+      - DD_CONTAINER_EXCLUDE=name:datadog-agent-*
+      - DD_TAGS="service:mtr01"
+      - DD_SYSTEM_PROBE_ENABLED=true
+      - DD_SYSPROBE_SOCKET=/var/run/sysprobe/sysprobe.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /sys/kernel/debug:/sys/kernel/debug
+      - /var/run/sysprobe:/var/run/sysprobe
+    security_opt:
+      - apparmor:unconfined
+      - seccomp:unconfined
+    cap_add:
+      - SYS_ADMIN
+      - SYS_RESOURCE
+      - SYS_PTRACE
+      - NET_ADMIN
+      - IPC_LOCK
