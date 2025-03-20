@@ -74,3 +74,9 @@ services:
       - SYS_PTRACE
       - NET_ADMIN
       - IPC_LOCK
+      - NET_BROADCAST
+      - NET_RAW
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
