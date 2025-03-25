@@ -57,6 +57,8 @@ services:
       - DD_CONTAINER_EXCLUDE=name:datadog-agent-*
       - DD_TAGS="service:mtr01"
       - DD_SYSTEM_PROBE_ENABLED=true
+      - DD_SYSTEM_PROBE_NETWORK_ENABLED=true
+      - DD_PROCESS_AGENT_ENABLED=true
       - DD_SYSPROBE_SOCKET=/var/run/sysprobe/sysprobe.sock
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -73,9 +75,10 @@ services:
       - SYS_RESOURCE
       - SYS_PTRACE
       - NET_ADMIN
-      - IPC_LOCK
       - NET_BROADCAST
       - NET_RAW
+      - IPC_LOCK
+      - CHOWN
     ulimits:
       memlock:
         soft: -1
