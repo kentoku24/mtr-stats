@@ -49,7 +49,7 @@ services:
     pid: host
     environment:
       - DD_API_KEY=${DD_API_KEY}
-      - DD_SITE=${DD_SITE:-datadoghq.com}
+      - DD_SITE=${DD_SITE:-ap1.datadoghq.com}
       - DD_HOSTNAME=mtr-monitor
       - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true 
       - DD_LOGS_ENABLED=true
