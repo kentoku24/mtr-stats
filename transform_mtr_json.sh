@@ -23,6 +23,6 @@ jq -c \
   # Extract source, destination and loss percentage from hubs
   .router = .report.hubs[0] |
   .dst = .report.hubs[-1] |
-  .router_loss = .report.hubs[-1]["Loss%"] |
-  .dst_loss = .report.hubs[0]["Loss%"]
+  .router_loss = .report.hubs[0]["Loss%"] |
+  .dst_loss = .report.hubs[-1]["Loss%"]
   '
