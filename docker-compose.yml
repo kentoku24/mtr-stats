@@ -1,47 +1,18 @@
 services:
-  mtr01:
+  mtr8888:
     build: .
     environment:
-      - TARGET_HOST=192.168.1.1  # 監視対象のホストを指定
+      - TARGET_HOST=8.8.8.8  # 監視対象のホストを指定
     volumes:
       - ./logs:/logs  # ログファイルを保存するディレクトリをマウント
     restart: always
     labels:
-      com.datadoghq.ad.logs: '[{"source": "mtr", "service": "mtr01"}]'
+      com.datadoghq.ad.logs: '[{"source": "mtr", "service": "mtr8888"}]'
     logging:
       driver: "json-file"
       options:
         labels: "service"
-        tag: "mtr01"
-
-  mtr02:
-    build: .
-    environment:
-      - TARGET_HOST=192.168.1.9  # 監視対象のホストを指定
-    volumes:
-      - ./logs:/logs  # ログファイルを保存するディレクトリをマウント
-    restart: always
-    labels:
-      com.datadoghq.ad.logs: '[{"source": "mtr", "service": "mtr02"}]'
-    logging:
-      driver: "json-file"
-      options:
-        labels: "service"
-        tag: "mtr02"
-  mtr03:
-    build: .
-    environment:
-      - TARGET_HOST=192.168.1.22 # 監視対象のホストを指定
-    volumes:
-      - ./logs:/logs  # ログファイルを保存するディレクトリをマウント
-    restart: always
-    labels:
-      com.datadoghq.ad.logs: '[{"source": "mtr", "service": "mtr03"}]'
-    logging:
-      driver: "json-file"
-      options:
-        labels: "service"
-        tag: "mtr03"
+        tag: "mtr8888"
 
 
   datadog-agent:

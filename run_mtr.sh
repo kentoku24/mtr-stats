@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 # Usage function to display how to use the script
 usage() {
   echo "Usage: $0 TARGET_HOST HOST_IP CURRENT_TIME DIR_PATH"
@@ -26,10 +28,12 @@ CURRENT_TIME=$3
 DIR_PATH=$4
 
 # 出力ファイル名を設定
-OUTPUT_FILE="${DIR_PATH}/to_${TARGET_HOST}_from_${HOST_IP}.log"
+OUTPUT_FILE="${DIR_PATH}/to_${TARGET_HOST}_from_${HOST_IP}.json"
 
-# MTRを実行して結果を整形
-RAW_MTR_OUTPUT=$(mtr -r -b -c 5 --json $TARGET_HOST | sh transform_mtr_json.sh "$CURRENT_TIME" "$HOST_IP")
+# MTRを実行して結果を整形 ネットワークダウン時はタイムスタンプのみ出力
+MTR_OR_EMPTY=$(mtr -r -b -c 5 -i 0.1 -w 1 --json $TARGET_HOST || echo '{}')
+
+RAW_MTR_OUTPUT=$(echo "$MTR_OR_EMPTY" | sh transform_mtr_json.sh "$CURRENT_TIME" "$HOST_IP")
 
 # ログファイルに出力
 echo "$RAW_MTR_OUTPUT" >> $OUTPUT_FILE

@@ -19,7 +19,7 @@ while true; do
     CURRENT_DATE=$(date '+%Y_%m_%d')
     # Create date-based directory format yyyymmdd
     DATE_DIR=$(date '+%Y%m%d')
-    DIR_PATH="/logs/dt=${DATE_DIR}"
+    DIR_PATH="logs/dt=${DATE_DIR}"
     # Create directory if it doesn't exist
     mkdir -p "${DIR_PATH}"
     
