@@ -1,48 +1,18 @@
 services:
-  mtr01:
+  mtr88:
     build: .
     environment:
-      - TARGET_HOST=192.168.1.1  # 監視対象のホストを指定
+      - TARGET_HOST=8.8.8.8  # 監視対象のホストを指定
     volumes:
       - ./logs:/logs  # ログファイルを保存するディレクトリをマウント
     restart: always
     labels:
-      com.datadoghq.ad.logs: '[{"source": "mtr", "service": "mtr01"}]'
+      com.datadoghq.ad.logs: '[{"source": "mtr", "service": "mtr88"}]'
     logging:
       driver: "json-file"
       options:
         labels: "service"
-        tag: "mtr01"
-
-  mtr02:
-    build: .
-    environment:
-      - TARGET_HOST=192.168.1.9  # 監視対象のホストを指定
-    volumes:
-      - ./logs:/logs  # ログファイルを保存するディレクトリをマウント
-    restart: always
-    labels:
-      com.datadoghq.ad.logs: '[{"source": "mtr", "service": "mtr02"}]'
-    logging:
-      driver: "json-file"
-      options:
-        labels: "service"
-        tag: "mtr02"
-  mtr03:
-    build: .
-    environment:
-      - TARGET_HOST=192.168.1.22 # 監視対象のホストを指定
-    volumes:
-      - ./logs:/logs  # ログファイルを保存するディレクトリをマウント
-    restart: always
-    labels:
-      com.datadoghq.ad.logs: '[{"source": "mtr", "service": "mtr03"}]'
-    logging:
-      driver: "json-file"
-      options:
-        labels: "service"
-        tag: "mtr03"
-
+        tag: "mtr88"
 
   datadog-agent:
     image: gcr.io/datadoghq/agent:latest
@@ -50,12 +20,12 @@ services:
     environment:
       - DD_API_KEY=${DD_API_KEY}
       - DD_SITE=${DD_SITE:-ap1.datadoghq.com}
-      - DD_HOSTNAME=mtr-monitor
+      - DD_HOSTNAME=mtr-monitor-mac
       - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true 
       - DD_LOGS_ENABLED=true
       - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
       - DD_CONTAINER_EXCLUDE=name:datadog-agent-*
-      - DD_TAGS="service:mtr01"
+      - DD_TAGS="service:${HOSTNAME:-$$(hostname)}"
       - DD_SYSTEM_PROBE_ENABLED=true
       - DD_SYSTEM_PROBE_NETWORK_ENABLED=true
       - DD_PROCESS_AGENT_ENABLED=true
