@@ -4,4 +4,18 @@ services:
     volumes:
       - ./logs:/app/logs
     working_dir: /app/ping_stats
-    command: ["8.8.8.8", "myhost"]  # ここでIPやホスト名を可変で指定
+    command: ["8.8.8.8", "raspberrypi"]  # ここでIPやホスト名を可変で指定
+
+  rsync:
+    build:
+      context: .
+      dockerfile: Dockerfile_rsync
+    volumes:
+      - ./logs:/app/logs
+    environment:
+      - RSYNC_TARGET=pingstats@m4macmini.local:/Volumes/WD16T_raid/pingstats/
+      - RSYNC_OPTIONS=-avz --delete
+      - RSYNC_SSH_KEY_PATH=/app/id_ed25519
+      - SYNC_INTERVAL=60
+    working_dir: /app
+    network_mode: host

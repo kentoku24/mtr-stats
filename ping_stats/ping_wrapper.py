@@ -50,7 +50,7 @@ def main(argv=None):
     ms = run_ping(target_ip)
     # ログディレクトリ作成
     log_date = now.strftime('%Y%m%d')
-    log_dir = f"logs/dt={log_date}/"
+    log_dir = f"/app/logs/dt={log_date}/"
     os.makedirs(log_dir, exist_ok=True)
     log_path = os.path.join(log_dir, f"{hostname}.log")
     if ms is not None and ms <= 500:

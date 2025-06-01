@@ -1,0 +1,12 @@
+FROM debian:stable-slim
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends rsync openssh-client && \
+    rm -rf /var/lib/apt/lists/*
+
+
+WORKDIR /app
+COPY --chmod=700 rsync_entrypoint.sh /app/rsync_entrypoint.sh
+COPY --chmod=600 id_ed25519 /app/id_ed25519
+
+ENTRYPOINT ["/app/rsync_entrypoint.sh"]
