@@ -1,0 +1,18 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "enabledManagers": [
+    "dockerfile",
+    "regex"
+  ],
+  "regexManagers": [
+    {
+      "fileMatch": ["(^|/)Dockerfile.*$"],
+      "matchStrings": [
+        "RUN apt-get install[^\n]*?\\s(?<depName>[a-z0-9\\-]+)\\s?(?<currentValue>[0-9\\.\\-]*)"
+      ],
+      "datasourceTemplate": "apt"
+    }
+  ]
+}
