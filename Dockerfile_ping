@@ -1,0 +1,15 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# ping_stats ディレクトリをコンテナにコピー
+COPY ping_stats/ ./ping_stats/
+
+# logs ディレクトリを作成（マウント用）
+RUN mkdir -p /app/logs
+
+# 必要なら追加パッケージ（例: iputils-ping）をインストール
+RUN apt-get update && apt-get install -y iputils-ping && rm -rf /var/lib/apt/lists/*
+
+# デフォルトコマンド（例: bash起動）
+CMD [\"bash\"]

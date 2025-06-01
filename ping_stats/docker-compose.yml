@@ -1,0 +1,7 @@
+services:
+  ping:
+    build: .
+    volumes:
+      - ./logs:/app/logs
+    working_dir: /app/ping_stats
+    command: ["8.8.8.8", "myhost"]  # ここでIPやホスト名を可変で指定

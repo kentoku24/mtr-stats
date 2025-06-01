@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  ping:
+    build: .
+    volumes:
+      - ./logs:/app/logs
+    working_dir: /app/ping_stats
+    # 例: ping_wrapper.py を実行するコマンド
+    # command: ["python", "ping_wrapper.py", "8.8.8.8", "to_8.8.8.8_from_container"]
+    # ↑必要に応じてcommandを有効化・編集してください
