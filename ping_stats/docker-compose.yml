@@ -19,3 +19,6 @@ services:
       - SYNC_INTERVAL=60
     working_dir: /app
     network_mode: host
+    # raspberrypi上ではm4macmini.localが解決できなかったので、必要に応じてextra_hostsを設定
+    #extra_hosts:
+    #  - "m4macmini.local:192.168.1.8" 
