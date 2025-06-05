@@ -1,10 +1,11 @@
 version: '3.8'
 services:
   ping:
-    build: .
+    build:
+      context: ./ping_stats # Context is now the ping_stats directory
+      dockerfile: Dockerfile # Explicitly name Dockerfile as it's a standard name
     volumes:
       - ./logs:/app/logs
-    working_dir: /app/ping_stats
-    # 例: ping_wrapper.py を実行するコマンド
+    working_dir: /app # Matches WORKDIR in Dockerfile
     # command: ["python", "ping_wrapper.py", "8.8.8.8", "to_8.8.8.8_from_container"]
     # ↑必要に応じてcommandを有効化・編集してください

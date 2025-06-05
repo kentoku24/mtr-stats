@@ -3,7 +3,7 @@ services:
     build: .
     volumes:
       - ./logs:/app/logs
-    working_dir: /app/ping_stats
+    working_dir: /app # Changed to /app to match Dockerfile WORKDIR and script locations
     command: ["8.8.8.8", "raspberrypi"]  # ここでIPやホスト名を可変で指定
 
   rsync:

@@ -20,7 +20,8 @@ def run_ping(target_ip):
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=2)
         if result.returncode != 0:
-            return None
+            # Ping command executed but indicated an error (e.g., host unreachable, but not a timeout)
+            return "execution_error"
         # 出力からtime=xxx msを抽出
         for line in result.stdout.splitlines():
             if 'time=' in line:
@@ -28,11 +29,16 @@ def run_ping(target_ip):
                 try:
                     ms = float(line.split('time=')[1].split(' ')[0])
                     return ms
-                except Exception:
-                    return None
-        return None
+                except (ValueError, IndexError):
+                    # Failed to parse the time value
+                    return "parsing_error"
+        # 'time=' not found in output
+        return "parsing_error"
+    except subprocess.TimeoutExpired:
+        return "timeout_error"
     except Exception:
-        return None
+        # Catch-all for any other unexpected errors during subprocess execution or otherwise
+        return "unknown_error"
 
 def format_time(dt):
     # 2025-05-22T12:34:56.789Z の形式
@@ -47,15 +53,27 @@ def main(argv=None):
     target_ip = argv[0]
     hostname = argv[1]
     now = get_now()
-    ms = run_ping(target_ip)
+    ms_or_error = run_ping(target_ip) # Renamed to reflect it can be error string
     # ログディレクトリ作成
     log_date = now.strftime('%Y%m%d')
-    log_dir = f"/app/logs/dt={log_date}/"
+    # Fetch LOG_BASE_PATH from environment variables, default to /app/logs
+    log_base_path = os.getenv('LOG_BASE_PATH', '/app/logs')
+    log_dir = f"{log_base_path}/dt={log_date}/"
     os.makedirs(log_dir, exist_ok=True)
     log_path = os.path.join(log_dir, f"{hostname}.log")
-    if ms is not None and ms <= 500:
-        log_line = f"{format_time(now)} {ms:.3f}"
+
+    # Process the result from run_ping
+    # Existing tests expect 'null' for errors or high latency.
+    # The improved run_ping gives more specific errors, but main will normalize to 'null' for logging.
+    if isinstance(ms_or_error, float) and ms_or_error <= 500:
+        log_line = f"{format_time(now)} {ms_or_error:.3f}"
     else:
+        # This covers:
+        # - ms_or_error being a float > 500
+        # - ms_or_error being "execution_error"
+        # - ms_or_error being "timeout_error"
+        # - ms_or_error being "parsing_error"
+        # - ms_or_error being "unknown_error"
         log_line = f"{format_time(now)} null"
     print(log_line)
     with open(log_path, 'a') as f:
