@@ -1,3 +1,7 @@
 logs/**
 .DS_Store
 .env
+bot/node_modules/
+bot/.env
+bot/data/*.json
+.codex-slack-worktrees/

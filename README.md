@@ -2,6 +2,15 @@
 
 このプロジェクトは、MTR（My TraceRoute）を使用して定期的にネットワークの統計情報を収集するDockerコンテナを提供します。1分ごとにMTRの測定を実行し、結果をログファイルに保存します。
 
+## Slack Codex Cloud Bot
+
+Slack から Codex のリモート環境に coding task を投げる Bot を [`bot/README.md`](./bot/README.md) に追加しています。
+
+- Slack の `app_mention` / thread reply を受信
+- `codex cloud exec` で Codex Cloud task を起動
+- 完了後に thread ごとの git worktree へ `codex cloud apply`
+- Slack thread に branch / task URL / diff 状態を返信
+
 ## 機能
 
 - 1分ごとのMTR統計情報の収集
